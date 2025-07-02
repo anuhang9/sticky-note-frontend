@@ -17,21 +17,12 @@ export const SignUpPage = () => {
   
   const { signUp, error, isLoading } = useAuthStore();
   const navigate = useNavigate()
-
-  const [signupError, setSignUpError] = useState<null | string>(null)
-
-  const handleChange =(evt: React.ChangeEvent<HTMLInputElement>)=>{
+    const handleChange =(evt: React.ChangeEvent<HTMLInputElement>)=>{
     const{name, value} = evt.target;
     setSignUpFormData((previousValue)=> ({...previousValue, [name]:value}))
   }
   const handleSubmit =async (evt: React.FormEvent<HTMLFormElement>)=>{
     evt.preventDefault()
-    if(!signUpFormData.email || !signUpFormData.name || !signUpFormData.password || !signUpFormData.userName){
-      setSignUpError("required field.")
-      return;
-    }
-    setSignUpError(null)
-    // console.log(signUpFormData)
     try{
       await signUp(signUpFormData.email, signUpFormData.password, signUpFormData.name, signUpFormData.userName);
       navigate("/otpverify")

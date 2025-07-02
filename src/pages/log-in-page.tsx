@@ -4,17 +4,14 @@ import { Input } from "../components/input";
 import { Lock, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../auth/authStore";
-import toast from "react-hot-toast";
 
 export const LogInPage = () => {
   const [logInCredential, setLogInCredential] = useState({
     userName: "",
     password: ""
   })
-  const {login, isLoading, error} = useAuthStore()
-  toast.error(error)
+  const {login} = useAuthStore()
   const navigate = useNavigate()
-  const [logInError, setLogInError] = useState("")
 
   const handleOnChangeLogIn =(evt: React.ChangeEvent<HTMLInputElement>)=>{
     const {name, value} = evt.target;
@@ -23,10 +20,8 @@ export const LogInPage = () => {
   const handleSubmitLogIn = async(evt: React.FormEvent<HTMLFormElement>)=>{
     evt.preventDefault()
     if(!logInCredential.userName || !logInCredential.password){
-      setLogInError("requred field");
       return;
     }
-    setLogInError("")
     try{
       await login(logInCredential.userName, logInCredential.password)
       navigate('/')
