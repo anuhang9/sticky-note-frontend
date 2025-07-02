@@ -1,11 +1,12 @@
 import { Card } from "../components/card";
 import { ColorGroup } from "../components/color-group";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface DynamicDivColor {
   headerColor: string;
   bodyColor: string;
 }
+
 interface DynamicDivPosition {
   positionX: string;
   positionY: string
@@ -17,6 +18,7 @@ interface NoteFormat {
   noteDivPosition: DynamicDivPosition;
   noteData: string
 }
+
 interface handleclickToAddNoteFormat{
   id: string;
   headerColor: string;
@@ -29,13 +31,11 @@ export const Home = () => {
   const stickyDivRef = useRef<HTMLDivElement>(null);
   const parentDiv = useRef<HTMLDivElement>(null);
   const [noteData, setNoteData] = useState<NoteFormat[]>([]);
-  // const [noteValue, setNoteValue] = useState("")
-  // console.log(noteData);
+  const [writtenNote, setWrittenNote] = useState("")
 
   const handleMouseDown = (evt: React.MouseEvent<HTMLDivElement>) => {
     if (!stickyDivRef.current) return;
-    const stickyRect = stickyDivRef.current.getBoundingClientRect();
-
+    const stickyRect = stickyDivRef.current.getBoundingClientRect()
     const headerHight = 26;
 
     const draggablePart =
@@ -65,7 +65,6 @@ export const Home = () => {
     // Get raw position
     let newX = evt.clientX - divPosition.current.x;
     let newY = evt.clientY - divPosition.current.y;
-    // console.log(newX, newY)
 
     const marginX = 16;
     const marginY = 16;
@@ -93,36 +92,31 @@ export const Home = () => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
   const handleclickToAddNote = ({id, headerColor, bodyColor}: handleclickToAddNoteFormat, evt) => {
-    // console.log(id, evt)
     setNoteData((prevNoteData) => [
       ...prevNoteData,
       {
         id,
-        noteDivColor: {
           headerColor,
           bodyColor,
-        },
-        noteDivPosition: {
-          positionX: evt.clientX - divPosition.current.x,
-          positionY: evt.clientY - divPosition.current.y,
-        },
-        noteData: "hard core data",
       },
     ]);
   };
-  const handleOnChange =(evt)=>{
-    // setNoteData(evt.target.value)   
-    const {name, value} = evt.target; 
-    setNoteData((prevData)=>({...prevData, [name]: value}))
+  const handleOnChange =(evt: React.ChangeEvent)=>{
+    setWrittenNote(evt.target.value)
   }
-  // console.log(noteData.noteDivPosition.positionX, noteData.noteDivPosition.positionY)
+  // if()
+  localStorage.setItem("notes", writtenNote)
+  let getnote = localStorage.getItem("notes")
+  setWrittenNote(getnote)
 
-  // useEffect(() => {
-  //   return () => {
-  //     document.removeEventListener("mousemove", handleMouseMove);
-  //     document.removeEventListener("mouseup", handleMouseUp);
-  //   };
-  // }, []);
+  console.log(writtenNote)
+
+  useEffect(() => {
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
 
   return (
     <div className="absolute top-0 gap-10 p-10 min-h-screen w-full flex items-center justify-center">
@@ -134,26 +128,35 @@ export const Home = () => {
         className=" w-[calc(100vw-128px)] h-[calc(100vh-80px)] relative"
       >
         {noteData.map((data) => {
-          // console.log(data);
-          // console.log(data.noteData)
           return (
             <Card
               key={data.id}
               position={position}
               stickyDivRef={stickyDivRef}
               handleMouseDown={handleMouseDown}
-              cardColor={data.noteDivColor}
-              noteData={data.noteData}
+              headerColor={data.headerColor}
+              bodyColor ={data.bodyColor}
+              noteData={writtenNote}
               handleOnChange = {handleOnChange}
             />
-            // <h1>hello</h1>
           );
         })}
-        {/* <Card
-          position={position}
-          stickyDivRef={stickyDivRef}
-          handleMouseDown={handleMouseDown}
-        /> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
     </div>
   );
